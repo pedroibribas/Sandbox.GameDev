@@ -1,0 +1,52 @@
+﻿@page "/"
+@using Blazor.Extensions
+@using Blazor.Extensions.Canvas
+@using Blazor.Extensions.Canvas.Canvas2D
+@using Sandbox.GameDev.Domain.Models
+@using Sandbox.GameDev.Domain.Models.Base
+@rendermode InteractiveServer
+@inject IJSRuntime JS;
+
+<PageTitle>Game</PageTitle>
+
+<div style="display: none">
+    <img src="images/backgroundLevel1.png" @ref="_backgroundLevel1Reference" />
+    <img src="images/foregroundLevel1.png" @ref="_foregroundLevel1Reference" />
+    <img src="images/hero1.png" @ref="_hero1Reference" />
+</div>
+
+<BECanvas Width="1000" Height="1000" @ref="_canvasReference"></BECanvas>
+
+@code {
+    private Canvas2DContext _context = null!;
+    private Game _game = null!;
+    private BECanvasComponent? _canvasReference;
+    private ElementReference _backgroundLevel1Reference;
+    private ElementReference _foregroundLevel1Reference;
+    private ElementReference _hero1Reference;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        this._context = await this._canvasReference.CreateCanvas2DAsync();
+
+        await JS.InvokeAsync<object>("initRenderJS",
+            DotNetObjectReference.Create(this));
+
+        _game = new SampleGame(new()
+        {
+            _backgroundLevel1Reference,
+            _foregroundLevel1Reference,
+            _hero1Reference
+        });
+    }
+
+    [JSInvokable]
+    public void HandleKeyDown(string key) => _game.Input.AddKeyPressed(key);
+
+    [JSInvokable]
+    public void HandleKeyUp(string key) => _game.Input.RemoveKeyReleased(key);
+
+    [JSInvokable]
+    public void RenderInBlazor(float timeStamp) => _game.RenderAsync(_context);
+
+}

@@ -1,0 +1,19 @@
+﻿@page "/"
+@using Blazor.Extensions
+@using Blazor.Extensions.Canvas.Canvas2D
+@rendermode InteractiveServer
+
+<BECanvas Width="300" Height="400" @ref="_canvasReference"></BECanvas>
+
+@code {
+    private Canvas2DContext _context = null!;
+
+    protected BECanvasComponent _canvasReference = null!;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        this._context = await this._canvasReference.CreateCanvas2DAsync();
+
+        await this._context.InitAsync();
+    }
+}
