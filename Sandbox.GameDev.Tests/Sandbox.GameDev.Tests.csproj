@@ -22,4 +22,9 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Sandbox.GameDev.Domain\Sandbox.GameDev.Domain.csproj" />
+    <ProjectReference Include="..\Sandbox.GameDev.UI.BlazorApp\Sandbox.GameDev.UI.BlazorApp.csproj" />
+  </ItemGroup>
+
 </Project>

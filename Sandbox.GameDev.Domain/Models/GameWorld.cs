@@ -5,9 +5,7 @@ namespace Sandbox.GameDev.Domain.Models
     public class GameWorld(Grid grid, List<WorldLevel> levels)
     {
         public Grid Grid { get; private set; } = grid;
-
         public List<WorldLevel> Levels { get; set; } = levels;
-
 
         public async void DrawGridAsync(Canvas2DContext context)
         {

@@ -2,9 +2,9 @@
 
 namespace Sandbox.GameDev.Domain.Models;
 
-public class GameInput(Dictionary<string, InputKey> settings)
+public abstract class GameInput()
 {
-    private readonly Dictionary<string, InputKey> Settings = settings;
+    protected abstract Dictionary<string, InputKey> Settings { get; }
 
     public List<InputKey> Keys { get; private set; } = [];
 

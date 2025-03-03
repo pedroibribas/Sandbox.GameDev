@@ -47,6 +47,6 @@
     public void HandleKeyUp(string key) => _game.Input.RemoveKeyReleased(key);
 
     [JSInvokable]
-    public void RenderInBlazor(float timeStamp) => _game.RenderAsync(_context);
+    public void RenderInBlazor(float timeStamp) => _game.RenderAsync(_context, timeStamp);
 
 }
