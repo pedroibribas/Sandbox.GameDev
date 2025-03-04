@@ -11,6 +11,7 @@ public class Hero(double tileSize,
                   double scale,
                   int speed) : GameObject(tileSize, game, sprite, position, scale)
 {
+    private bool IsMoving = false;
     public int Speed { get; } = speed;
 
     public override void DrawAsync(Canvas2DContext context)
@@ -18,18 +19,21 @@ public class Hero(double tileSize,
         base.DrawAsync(context);
     }
 
-    public void Update(bool updateEvent)
+    public void Update(bool updateEvent, float deltaTime)
     {
         double nextX = DestinationPosition.X;
         double nextY = DestinationPosition.Y;
 
-        double distance = MoveTo(DestinationPosition, Speed);
+        // Adjust to consistent speed throughout diferents devices
+        float scaledSpeed = Speed * (deltaTime / 1000); // px per secs
 
-        bool arrived = distance <= Speed;
+        double distance = MoveTo(DestinationPosition, scaledSpeed);
+
+        bool hasArrived = distance <= scaledSpeed;
 
         SpriteState spriteState = default;
 
-        if (arrived)
+        if (hasArrived)
         {
             if (Game.Input.Keys.Count == 0)
             {
@@ -64,14 +68,32 @@ public class Hero(double tileSize,
             Sprite.ChangeSpriteState(spriteState);
 
             // Recalc
-            DestinationPosition.X = nextX;
-            DestinationPosition.Y = nextY;
+            int col = (int)(nextX / TileSize);
+            int row = (int)(nextY / TileSize);
+            if (Game.World.GetTile(Game.World.CurrentWorldLevel.CollisionLayer, row, col) != 1)
+            {
+                DestinationPosition.X = nextX;
+                DestinationPosition.Y = nextY;
+            }
         }
 
-        if (updateEvent)
+        SetIsMoving(hasArrived);
+        if (updateEvent && IsMoving)
         {
             Sprite.ChangeStateFrame(spriteState);
         }
+        else if (!IsMoving)
+        {
+            Sprite.CurrentPosition.X = 0;
+        }
     }
 
+    private void SetIsMoving(bool hasArrived)
+    {
+        if (Game.Input.Keys.Count > 0 || !hasArrived)
+        {
+            IsMoving = true;
+        }
+        else IsMoving = false;
+    }
 }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components;
 using Sandbox.GameDev.Domain.Models;
 using Sandbox.GameDev.Domain.Models.Base;
+using Sandbox.GameDev.Domain.Models.Enums;
 using Sandbox.GameDev.UI.BlazorApp.Components.Models;
 
 namespace Sandbox.GameDev.UI.BlazorApp.Components.Pages;
@@ -16,30 +17,35 @@ public class SampleGame : Game
     private float EventTimer = 0;
     private readonly float EventInterval = 200;
 
+    public SampleGame(List<ElementReference> elements)
+    {
+        List<WorldLevel> worldLevels = MapBlazorElementsToWorldLevel(elements);
+
+        Sprites = MapBlazorElementsToSprites(elements);
+        Input = new SampleGameInput();
+        World = new SampleGameWorld(Grid, worldLevels, worldLevels[0]);
+        Hero = new SampleGameHero(tileSize: Grid.TileSize,
+                                  game: this,
+                                  sprite: Sprites[0],
+                                  screenPosition: new Position(Grid.TileSize * 1, Grid.TileSize * 2));
+    }
+
     public async override void RenderAsync(Canvas2DContext context, float timeStamp = 0)
     {
-        HandleEventInterval(timeStamp);
+        ToggleDebugMode();
 
-        await HandleRenderAsync(context);
-    }
+        float deltaTime = timeStamp - LastTime;
+        LastTime = timeStamp;
 
-    private async Task HandleRenderAsync(Canvas2DContext context)
-    {
         await context.BeginBatchAsync();
         await context.ClearRectAsync(0, 0, Grid.Width, Grid.Height);
-        Hero.Update(UpdateEvent);
+        Hero.Update(UpdateEvent, deltaTime);
         World.DrawBackgroundAsync(context);
-        World.DrawGridAsync(context);
+        if (DebugMode) World.DrawGridAsync(context);
         Hero.DrawAsync(context);
         World.DrawForegroundAsync(context);
+        if (DebugMode) World.DrawCollisionGridAsync(context, World.Levels[0].CollisionLayer);
         await context.EndBatchAsync();
-    }
-
-    private void HandleEventInterval(float timeStamp)
-    {
-        float deltaTime = timeStamp - LastTime;
-
-        LastTime = timeStamp;
 
         // Set event update flag to `true` each "X" milliseconds
         if (EventTimer < EventInterval)
@@ -51,20 +57,18 @@ public class SampleGame : Game
         {
             // EventTimer = 0;
             EventTimer = EventInterval % EventTimer; // More precise than above
-            
+
             UpdateEvent = true;
         }
     }
 
-    public SampleGame(List<ElementReference> elements)
+    private void ToggleDebugMode()
     {
-        Sprites = MapBlazorElementsToSprites(elements);
-        Input = new SampleGameInput();
-        World = new SampleGameWorld(Grid, MapBlazorElementsToWorldLevel(elements));
-        Hero = new SampleGameHero(tileSize: Grid.TileSize,
-                                  game: this,
-                                  sprite: Sprites[0],
-                                  screenPosition: new Position(Grid.TileSize * 1, Grid.TileSize * 2));
+        if (Input.Keys.Count != 0 
+            && Input.LastKey == InputKey.EnableDebug)
+        {
+            DebugMode = !DebugMode;
+        }
     }
 
     private static List<Sprite> MapBlazorElementsToSprites(List<ElementReference> elements) => [
@@ -75,7 +79,29 @@ public class SampleGame : Game
             new()
             {
                 BackgroundLayer = elements[0],
-                ForegroundLayer = elements[1]
+                ForegroundLayer = elements[1],
+                CollisionLayer = [
+                    1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+                    1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+                    1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+                    1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+                    1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+                    1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+                    1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+                    1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+                    1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+                    1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+                    1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+                    1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+                    1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+                    1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+                    1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+                    1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+                    1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+                    1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+                    1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+                    1,0,0,0,0,0,0,0,0,0,0,0,0,0,1
+                ]
             }
         ];
 

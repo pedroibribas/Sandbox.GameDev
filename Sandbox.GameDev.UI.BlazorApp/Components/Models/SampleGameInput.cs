@@ -10,6 +10,7 @@ public class SampleGameInput : GameInput
         { "w", InputKey.Up },
         { "s", InputKey.Down },
         { "a", InputKey.Left },
-        { "d", InputKey.Right }
+        { "d", InputKey.Right },
+        { "Enter", InputKey.EnableDebug }
     };
 }

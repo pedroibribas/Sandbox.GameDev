@@ -2,6 +2,7 @@
 {
     public enum InputKey
     {
-        Up, Down, Left, Right
+        Up, Down, Left, Right,
+        EnableDebug
     }
 }

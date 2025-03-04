@@ -10,5 +10,7 @@ public abstract class Game()
     public GameWorld World { get; set; } = null!;
     public Hero Hero { get; set; } = null!;
 
+    public bool DebugMode = false;
+
     public abstract void RenderAsync(Canvas2DContext context, float timeStamp);
 }

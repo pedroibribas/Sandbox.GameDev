@@ -42,9 +42,11 @@ public abstract class GameObject
 
     public virtual void DrawAsync(Canvas2DContext context)
     {
-        DrawObjectShadowAsync(context);
-
-        DrawObjectMovementShadowAsync(context);
+        if (Game.DebugMode)
+        {
+            DrawObjectShadowAsync(context);
+            DrawObjectMovementShadowAsync(context);
+        }
 
         DrawSpriteAsync(context);
     }
@@ -61,7 +63,7 @@ public abstract class GameObject
 
     public async void DrawObjectShadowAsync(Canvas2DContext context)
     {
-        await context.SetFillStyleAsync("blue");
+        await context.SetFillStyleAsync("rgba(0,0,255,0.7)");
         await context.FillRectAsync(x: Position.X,
                                     y: Position.Y,
                                     width: TileSize,
@@ -82,7 +84,7 @@ public abstract class GameObject
             positionX, positionY, Width, Height);
     }
 
-    public double MoveTo(Position destinationPosition, int speed)
+    public double MoveTo(Position destinationPosition, float speed)
     {
         DistanceToDestination.X = destinationPosition.X - Position.X;
         DistanceToDestination.Y = destinationPosition.Y - Position.Y;
