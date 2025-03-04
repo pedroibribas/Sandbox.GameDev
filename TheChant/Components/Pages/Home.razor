@@ -1,7 +1,38 @@
 ﻿@page "/"
+@using Blazor.Extensions
+@using Blazor.Extensions.Canvas
+@using Blazor.Extensions.Canvas.Canvas2D
+@using Sandbox.GameDev.Domain.Models.Base
+@using TheChant.Components.Models
+@rendermode InteractiveServer
+@inject IJSRuntime JS;
 
-<PageTitle>Home</PageTitle>
+<PageTitle>@pageTitle</PageTitle>
 
-<h1>Hello, world!</h1>
+<div style="display: none">
+    <img src="images/bg1.png" @ref="bg1Reference">
+    <img src="images/fg1.png" @ref="fg1Reference">
+</div>
 
-Welcome to your new app.
+<BECanvas Width="500" Height="500" @ref="_canvasReference"></BECanvas>
+
+@code {
+    private string pageTitle = "O Cântigo";
+    private ElementReference bg1Reference;
+    private ElementReference fg1Reference;
+    private BECanvasComponent? _canvasReference;
+    private Canvas2DContext _context = null!;
+    private Game game = null!;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        this._context = await this._canvasReference.CreateCanvas2DAsync();
+
+        game = new TheChant(resources: [
+            bg1Reference,
+            fg1Reference
+        ]);
+
+        game.RenderAsync(_context, timeStamp: 0);
+    }
+}
