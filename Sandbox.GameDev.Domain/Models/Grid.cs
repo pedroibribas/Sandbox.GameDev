@@ -1,16 +1,14 @@
-﻿using Blazor.Extensions.Canvas.Canvas2D;
-
-namespace Sandbox.GameDev.Domain.Models;
+﻿namespace Sandbox.GameDev.Domain.Models;
 
 public class Grid
 {
-    public int TileSize { get; private set; }
-    public int Columns { get; private set; }
-    public int Rows { get; private set; }
-    public int Width { get; private set; }
-    public int Height { get; private set; }
-    public int X { get; private set; }
-    public int Y { get; private set; }
+    public int TileSize { get; }
+    public int Columns { get; }
+    public int Rows { get; }
+    public int Width { get; }
+    public int Height { get; }
+    public int X { get; }
+    public int Y { get; }
 
     public Grid(int tileSize, int columns, int rows, int x, int y)
     {

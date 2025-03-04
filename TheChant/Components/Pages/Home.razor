@@ -10,16 +10,14 @@
 <PageTitle>@pageTitle</PageTitle>
 
 <div style="display: none">
-    <img src="images/bg1.png" @ref="bg1Reference">
-    <img src="images/fg1.png" @ref="fg1Reference">
+    <img src="images/tilemap1.png" @ref="tilemap1Reference">
 </div>
 
-<BECanvas Width="500" Height="500" @ref="_canvasReference"></BECanvas>
+<BECanvas Width="160" Height="160" @ref="_canvasReference"></BECanvas>
 
 @code {
     private string pageTitle = "O Cântigo";
-    private ElementReference bg1Reference;
-    private ElementReference fg1Reference;
+    private ElementReference tilemap1Reference;
     private BECanvasComponent? _canvasReference;
     private Canvas2DContext _context = null!;
     private Game game = null!;
@@ -29,8 +27,7 @@
         this._context = await this._canvasReference.CreateCanvas2DAsync();
 
         game = new TheChant(resources: [
-            bg1Reference,
-            fg1Reference
+            tilemap1Reference
         ]);
 
         game.RenderAsync(_context, timeStamp: 0);

@@ -20,8 +20,8 @@ public class TheChant : Game
         await context.ClearRectAsync(0, 0, Grid.Width, Grid.Height);
 
         World.DrawBackgroundAsync(context);
-        World.DrawForegroundAsync(context);
-        World.DrawCollisionGridAsync(context, World.CurrentWorldLevel.CollisionLayer);
+        // World.DrawForegroundAsync(context);
+        // World.DrawCollisionGridAsync(context, World.CurrentWorldLevel.CollisionLayer);
         World.DrawGridAsync(context);
         
         await context.EndBatchAsync();

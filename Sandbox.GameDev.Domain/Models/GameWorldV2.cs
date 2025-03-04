@@ -1,4 +1,5 @@
 using Blazor.Extensions.Canvas.Canvas2D;
+using Microsoft.AspNetCore.Components;
 using Sandbox.GameDev.Domain.Interfaces;
 
 namespace Sandbox.GameDev.Domain.Models
@@ -46,20 +47,39 @@ namespace Sandbox.GameDev.Domain.Models
 
         public void DrawBackgroundAsync(Canvas2DContext context)
         {
-            context.DrawImageAsync(Levels[0].BackgroundLayer, 0, 0);
+            context.DrawImageAsync(CurrentWorldLevel.BackgroundLayer,
+                                   Grid.X, Grid.Y);
         }
 
         public void DrawForegroundAsync(Canvas2DContext context)
         {
-            context.DrawImageAsync(Levels[0].ForegroundLayer, 0, 0);
+            context.DrawImageAsync(CurrentWorldLevel.ForegroundLayer,
+                                   Grid.X, Grid.Y);
+        }
+
+        public void DrawTilemapAsync(Canvas2DContext context, int imgTileSize, int tile, int destX, int destY)
+        {
+            // Crop area at img
+            double sx = imgTileSize * tile % CurrentWorldLevel.Dimensions.Width;
+            double sy = tile / Grid.Columns  * imgTileSize;
+            double sWidth = imgTileSize;
+            double sHeight = imgTileSize;
+
+            // Canvas drawing area
+            double dx = Grid.TileSize * destX;
+            double dy = Grid.TileSize * destY;
+
+            context.DrawImageAsync(CurrentWorldLevel.BackgroundLayer,
+                                   sx, sy, sWidth, sHeight,
+                                   dx, dy, Grid.TileSize, Grid.TileSize);
         }
 
         public int GetTile(int[] array, int row, int column)
         {
             int area = Grid.Columns * row;
-            int columnIndex = area + column;
+            int index = area + column;
 
-            return array[columnIndex];
+            return array[index];
         }
 
     }

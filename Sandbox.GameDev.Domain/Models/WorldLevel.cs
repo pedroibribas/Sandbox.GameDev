@@ -9,5 +9,6 @@ namespace Sandbox.GameDev.Domain.Models
         public int[] CollisionLayer { get; set; } = [];
         public ElementReference BackgroundLayer { get; set; }
         public ElementReference ForegroundLayer { get; set; }
+        public Dimensions Dimensions { get; set; } = null!;
     }
 }
